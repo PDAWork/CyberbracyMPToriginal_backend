@@ -29,6 +29,7 @@
 ```
 ~/MPTOriginals/frontend$ yarn install
 ```
+4.Запуск frontend
 ```
 ~/MPTOriginals/frontend$ yarn start
 ```
