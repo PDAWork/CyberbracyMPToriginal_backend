@@ -51,17 +51,9 @@ object Server {
                 consultButton()
             }
         }
-        asQuestion("Привет") {
-            singleForwardAnswer({ line("Привет дружище!") }) {
-                line("Нет необходимости здороваца второй раз :D")
-            }
-        }
-        asQuestion("testcl") {
-            answer {
-                line("Цвет чёрный <Красненький :)>")
-                line("Цвет чёрный <Красненький > чорный")
-                line("Цвет <не чёрный 123 (Жж)> а красный тут <Я красный>")
-                line("<Привет я красный>")
+        asQuestion("Привет!") {
+            singleForwardAnswer({ line("Приветствую вас! Задавайте мне вопросы.") }) {
+                line("Нет необходимости приветствоваться вновь.")
             }
         }
         SystemDB.orgs.forEach {
