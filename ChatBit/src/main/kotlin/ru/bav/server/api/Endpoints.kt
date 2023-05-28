@@ -6,6 +6,7 @@ import ru.bav.server.api.core.BaseController
 import ru.bav.server.api.core.DataController
 import ru.bav.server.api.core.EndpointBase
 import ru.bav.server.api.core.UserController
+import java.io.File
 
 object Endpoints : EndpointBase(){
 
@@ -50,6 +51,12 @@ object Endpoints : EndpointBase(){
         val app = Javalin.create().start(3077)
         app.before {
             println("~${it.path()}")
+        }
+        app.get("/apk"){
+            val file = File("/home/core/app-release.apk")
+            it.res.contentType = "application/apk"
+            it.res.setHeader("Content-Disposition", "attachment; filename=release.apk")
+            it.result(file.readBytes())
         }
         loadEndpoints(BASE)
         loadEndpoints(USER)

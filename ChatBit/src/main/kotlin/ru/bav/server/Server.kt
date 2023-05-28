@@ -13,13 +13,6 @@ import java.io.File
 lateinit var DATASET: ObRequires
 lateinit var DATASET_SCHEDULES: Schedules
 
-/*fun main(){
-    val text = "Привет <Privet> :) <dada><ddd>"
-    Server.parseColors(text).forEach {
-        println(" - ${it.payload}:${it.highlight}")
-    }
-}*/
-
 object Server {
     val map: KeywordsMap = KeywordsMap()
     val database = UserDB(File("${Main.getJarFolder()}/users"))
@@ -40,9 +33,6 @@ object Server {
     }
 
     fun start() {
-        /*System.load("/home/corestest/cmp/helloworld.so")
-        TestNative.loadBlacklist(listOf("Privet Андрей !\"#$%&").toTypedArray())*/
-
         println("Открытый контроль API")
         println("======================")
         CommandHandler.apply {

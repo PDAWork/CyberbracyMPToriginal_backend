@@ -54,7 +54,11 @@ class Schedule(@get:java.beans.Transient val org:Organization) : MapSerializable
         availableMonths.firstOrNull()?.let {
             it.days += DaySlot(it).apply {
                 this.range = "17:25-19:00"
-                this.dayTimestamp = 1685208321000
+                this.dayTimestamp = 1685145600000
+            }
+            it.days += DaySlot(it).apply {
+                this.range = "13:25-15:00"
+                this.dayTimestamp = 1685318400000
             }
         }
         cacheSlots()

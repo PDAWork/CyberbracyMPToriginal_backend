@@ -3,9 +3,7 @@ package ru.bav.server.user
 import ru.bav.server.Server
 import ru.bav.server.api.OnesignalUtils
 import ru.bav.server.chat.Chat
-import ru.bav.server.db.schedule.DaySlot
-import ru.bav.server.db.schedule.Month
-import ru.bav.server.db.schedule.SlotID
+import ru.bav.server.db.schedule.*
 import ru.beenaxis.uio.io.DataMap
 import ru.beenaxis.uio.io.MapSerializable
 
@@ -26,6 +24,10 @@ class User : MapSerializable {
 
     //ONLY READ!
     val slots:MutableList<SlotID> = mutableListOf() //Записи на консультирование
+
+    fun getDays() : Collection<DaySlots> {
+        return slotsPack(slots.map { it.getDaySlot() ?: throw IllegalArgumentException("Day Slot reference broken") })
+    }
 
     fun sendNotify(text:String){
         OnesignalUtils.send(text, email)

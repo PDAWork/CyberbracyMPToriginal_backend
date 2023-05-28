@@ -4,11 +4,11 @@ import ObRequires
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import ru.bav.entry.Main
-import ru.bav.entry.TestNative
 import ru.bav.server.api.Endpoints
 import ru.bav.server.api.OnesignalUtils
 import ru.bav.server.chat.Chat
 import ru.bav.server.db.SystemDB
+import ru.bav.server.db.schedule.DaySlots
 import ru.bav.server.db.schedule.Month
 import ru.bav.server.db.schedule.SlotID
 import ru.bav.server.schemas.ParseSite
@@ -43,7 +43,7 @@ object CommandExecutor {
             val args = line.split(" ")
             when(args[0]){
                 "conslist"->{
-                    val list = Endpoints.USER.consultMonthList(args[1]) as List<Month.DaySlots>
+                    val list = Endpoints.USER.consultMonthList(args[1]) as List<DaySlots>
                     list.forEach {
                         println("DAY ENTRY ${it.timestamp.dateFormat()}")
                         it.slots.forEach {
@@ -57,9 +57,12 @@ object CommandExecutor {
                         .apply { println(this) }
                 }
                 "zlist"->{
-                    val list = Endpoints.USER.consultList(args[1].toLong(), true, "ГИН", 0) as List<SlotID>
+                    val list = Endpoints.USER.consults(args[1].toLong()) as Collection<DaySlots>
                     list.forEach {
-                        println("- ${it.from} ${it.question}")
+                        println(" DAY: ${it.timestamp.dateFormat()} ")
+                        it.slots.forEach {
+                            println("   - ${it.localDateTimeTo.dateFormat()} -> ${it.localDateTimeFrom.dateFormat()} : ${it.range}")
+                        }
                     }
                 }
                 "setrole"->{
@@ -69,18 +72,14 @@ object CommandExecutor {
                 "clear"->{
                     Endpoints.USER.clearConsults(args[1].toLong()).apply { println(this) }
                 }
-                "list"->{
-                    println("RES: ${Endpoints.USER.consultBook(args[1].toLong(), "ГИН", 0, 0, 1685197521000, "Вниманине Вапрос")}")
+                "nslot"->{
+                    val time = if(args[2] == "1") 1685197500000 else 1685355900000
+                    println("RES: ${Endpoints.USER.consultBook(args[1].toLong(), "ГИН", 0, 0, time, "Вниманине Вапрос")}")
                     println("CREATED!")
                 }
                 "not"->{
                     //AppID = 8ced7149-ca5f-471c-b828-23677f82feb7
                     OnesignalUtils.send(args.drop(2).joinToString { it.replace("\\n", "\n") }, args[1])
-                }
-                "test"->{
-                    val c = System.currentTimeMillis()
-                    val res = TestNative.similarityTest(args.joinToString(" ", "", ""))
-                    println("Result: ${res} (${System.currentTimeMillis()-c}ms)")
                 }
                 "parse"->{
                     ParseSite().parseUser()

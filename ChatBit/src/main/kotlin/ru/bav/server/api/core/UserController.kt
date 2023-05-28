@@ -2,10 +2,7 @@ package ru.bav.server.api.core
 
 import ru.bav.server.*
 import ru.bav.server.db.SystemDB
-import ru.bav.server.db.schedule.DaySlot
-import ru.bav.server.db.schedule.Month
-import ru.bav.server.db.schedule.SlotID
-import ru.bav.server.db.schedule.SlotStatus
+import ru.bav.server.db.schedule.*
 import ru.bav.server.keywords.Message
 import ru.bav.server.user.Role
 import ru.bav.server.user.User
@@ -63,7 +60,7 @@ class UserController : IEndpoints {
     @Get("/consult/month")
     @Description("Получить все записи возможные")
     fun consultMonthList(lowName: String): Any {
-        val list = mutableListOf<Month.DaySlots>()
+        val list = mutableListOf<DaySlots>()
         val org = SystemDB.byLowName(lowName) ?: return ErrOut("Нет такой организации")
         val (from, to) = monthRange(moscowMillis())
         org.schedule.availableMonths.forEach { month ->
@@ -76,7 +73,14 @@ class UserController : IEndpoints {
         return list
     }
 
-    @Get("/consult/list")
+    @Get("/consults")
+    @Description("Все слоты в виде дней по id")
+    fun consults(userId:Long) : Any {
+        val usr = Server.cache.getCachedOrLoad(userId) ?: return ErrOut("No user!")
+        return usr.getDays()
+    }
+
+    /*@Get("/consult/list")
     @Description("Получить все записи юзера (если isAll == true то lowName и dayLong не учитываются вообще, а выводятся сразу все слоты)")
     fun consultList(userId: Long, isAll: Boolean, lowName: String?, dayLong: Long?): Any {
         val (from, to) = dayRange(dayLong ?: 0L)
@@ -93,7 +97,7 @@ class UserController : IEndpoints {
             }
         }
         return toRet
-    }
+    }*/
 
     @Post("/clearConsults")
     @Description("Удаляет все записи по айди юзера")
@@ -187,9 +191,10 @@ class UserController : IEndpoints {
     @Description("Запрос на сообщение в чат бот")
     @Post("/onmessage")
     fun onMessage(userId: Long, message: String): Any {
-        val usr = Server.cache.getCachedOrLoad(userId) ?: return ErrOut("Not found user!")
-        val msgRet = usr.chat.onMessage(usr, message)
-        usr.save()
+        val usrSess = Server.cache.getCachedOrLoadSession(userId) ?: return ErrOut("Not found user!")
+        val msgRet = usrSess.user.chat.onMessage(usrSess.user, message)
+        usrSess.resetUnload()
+        usrSess.user.save()
         return toMessageOut(msgRet)
     }
 }

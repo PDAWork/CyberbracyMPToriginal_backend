@@ -5,11 +5,18 @@ import ru.bav.server.api.EndpointModels
 import ru.bav.server.dayRange
 import ru.bav.server.db.SystemDB
 import ru.bav.server.db.schedule.DaySlot
+import ru.bav.server.db.schedule.DaySlots
 import ru.bav.server.withFirstBigChar
 
 class DataController : IEndpoints {
     override val basePath: String
         get() = "/data"
+
+    /*@Get("/apk")
+    @Description("Скачать апк файлик")
+    fun getApk() : Any {
+
+    }*/
 
     @Get("/org/npas")
     @Description("Получить НПА организации")
@@ -26,7 +33,7 @@ class DataController : IEndpoints {
         val available = mutableListOf<DaySlot>()
         org.schedule.availableMonths.forEach {
             it.days.forEach a@{slot->
-                if(slot.idToConsultUser != null)return@a
+                if(slot.isBusy())return@a
                 if(slot.localDateTimeFrom in from .. to){
                     available += slot
                 }

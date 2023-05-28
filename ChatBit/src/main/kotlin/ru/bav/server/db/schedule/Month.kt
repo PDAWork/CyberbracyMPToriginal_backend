@@ -4,6 +4,29 @@ import ru.bav.server.db.Organization
 import ru.beenaxis.uio.io.DataMap
 import ru.beenaxis.uio.io.MapSerializable
 
+fun slotsPack(slots:List<DaySlot>) : Collection<DaySlots> {
+    val map = mutableMapOf<Long, DaySlots>()
+    slots.forEach {
+        if(map.containsKey(it.dayTimestamp)){
+            map[it.dayTimestamp]!!.slots += it
+        }else{
+            map[it.dayTimestamp] = DaySlots(it.dayTimestamp, mutableListOf(it))
+        }
+    }
+    return map.values
+}
+
+class DaySlots(val timestamp:Long, val slots:MutableList<DaySlot>){
+    fun isDayBusy() : Boolean {
+        slots.forEach {
+            if(!it.isBusy()){
+                return false
+            }
+        }
+        return true
+    }
+}
+
 class Month(@get:java.beans.Transient val org: Organization) : MapSerializable {
 
     //Июнь/3143413445354/18-00:19:00
@@ -11,26 +34,7 @@ class Month(@get:java.beans.Transient val org: Organization) : MapSerializable {
     val days: MutableList<DaySlot> = mutableListOf()
 
     fun getDays() : Collection<DaySlots> {
-        val map = mutableMapOf<Long, DaySlots>()
-        days.forEach {
-            if(map.containsKey(it.dayTimestamp)){
-                map[it.dayTimestamp]!!.slots += it
-            }else{
-                map[it.dayTimestamp] = DaySlots(it.dayTimestamp, mutableListOf(it))
-            }
-        }
-        return map.values
-    }
-
-    class DaySlots(val timestamp:Long, val slots:MutableList<DaySlot>){
-        fun isDayBusy() : Boolean {
-            slots.forEach {
-                if(!it.isBusy()){
-                    return false
-                }
-            }
-            return true
-        }
+        return slotsPack(days)
     }
 
     override fun dataDeserialize(map: DataMap) {
