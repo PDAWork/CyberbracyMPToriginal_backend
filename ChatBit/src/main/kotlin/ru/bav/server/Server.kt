@@ -152,9 +152,9 @@ object Server {
                             }
                             answerIf("НПА") {
                                 answer {
-                                    line("${it.requireName.shrink()}")
+                                    line(it.requireName.shrink())
                                     it.targetsNPA.forEach {
-                                        line("# НПА")
+                                        line("### НПА")
                                         line("${it.desc}")
                                         line("***")
                                         line("### От: ${it.from} До: ${it.to}")

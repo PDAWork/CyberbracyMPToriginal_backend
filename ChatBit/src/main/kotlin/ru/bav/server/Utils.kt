@@ -13,16 +13,19 @@ fun <T> MutableList<T>.addUnique(t:T){
     add(t)
 }
 
+//Сокращение строки
 fun String.shrink(len:Int = 50) : String {
     return if(length > len) substring(0, len) + "..." else this
 }
 
+//Форматы даты в МСК
 fun Long.dateFormat() : String{
     val formater = SimpleDateFormat("dd.MM.YYYY - HH:mm")
     formater.timeZone = getStandardTimeZone()
     return formater.format(Date(this))
 }
 
+//Миллисекунды относительно МСК
 fun moscowMillis(time:Long = System.currentTimeMillis()) : Long{
     val calendar = GregorianCalendar.getInstance()
     calendar.timeZone = getStandardTimeZone()
