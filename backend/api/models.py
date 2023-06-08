@@ -62,29 +62,8 @@ class Room(models.Model):
 
     """
     Room Model for group calling
-    {
-        user: 0,
-        tittle: "string",
-        description: "string",
-        type_of: "OTA",
-    }
     """
-
-    ROOM_TYPE = [
-        ("OTA", "Open to all"),
-        ("IO", "Invite only"),
-    ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listener = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="listener")
     title = models.CharField(max_length=200, blank=True, null=True)
-    description = models.TextField(default="", blank=True, null=True)
-    type_of = models.CharField(
-        max_length=3,
-        choices=ROOM_TYPE,
-        default="OTA",
-        blank=True,
-        null=True
-    )
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

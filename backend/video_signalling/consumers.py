@@ -81,6 +81,16 @@ class VideoConsumer(AsyncWebsocketConsumer):
                 },
             )
 
+        # Ice candidate from the user is send back to user who sent the ice candidate
+        elif data["type"] == "sending_candidate":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "sending_candidate",
+                    "data": data,
+                },
+            )
+
         # Firing signals to other user about user who just disconneted
         elif data["type"] == "disconnected":
             await self.channel_layer.group_send(
@@ -126,6 +136,19 @@ class VideoConsumer(AsyncWebsocketConsumer):
                     "from": data["from"],
                     "to": data["to"],
                     "answer": data["answer"],
+                }
+            )
+        )
+
+    async def sending_candidate(self, event):
+        data = event["data"]
+        await self.send(
+            json.dumps(
+                {
+                    "type": "sending_candidate",
+                    "from": data["from"],
+                    "to": data["to"],
+                    "candidate": data["candidate"],
                 }
             )
         )

@@ -70,16 +70,11 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = [
             "id",
-            "user",
             "title",
-            "description",
-            "type_of",
             "created_on",
             "room_id",
         ]
 
     # Generate room id
     def get_room_id(self, obj):
-        if obj.type_of == "IO":
-            return "room" + str(uuid4().hex)
         return "room" + str(obj.id)
