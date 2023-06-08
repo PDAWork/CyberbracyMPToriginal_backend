@@ -46,7 +46,14 @@ def verify_code(request):
 class UserView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            response = {"id": request.user.id}
+            response = {
+                "id": request.user.id,
+                "email": request.user.email,
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                "phone_number": request.user.phone_number,
+                "role": request.user.role
+            }
             return Response(response, status=status.HTTP_200_OK)
         else:
             return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
