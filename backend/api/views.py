@@ -93,7 +93,7 @@ class RegisterAndObtainTokenView(APIView):
                 )
                 try:
                     requests.post(
-                        f"http://46.243.201.240:3077/user/makeuser/?id={user.id}&fio={user.first_name + ' ' + user.last_name + 'Matrechectvo'}&roleTag={user.role}",
+                        f"http://46.243.201.240:3077/user/makeuser/?id={user.id}&email={user.email}&roleTag={user.role}",
                     )
                 except:
                     pass

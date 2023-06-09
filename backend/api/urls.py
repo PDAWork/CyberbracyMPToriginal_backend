@@ -11,7 +11,7 @@ urlpatterns = router.urls
 # Authentications Urls
 urlpatterns += [
     path("verify_code/", verify_code),
-    path("user/me", UserView.as_view()),
+    path("user/me/", UserView.as_view()),
     path("user/create/", RegisterAndObtainTokenView.as_view(), name="create_user"),
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
